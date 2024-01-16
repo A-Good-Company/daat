@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Markdown Editor</title>
+    <!-- Include SimpleMDE's CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.css">
+    <!-- Include SimpleMDE's JavaScript -->
+    <script src="https://cdn.jsdelivr.net/simplemde/latest/simplemde.min.js"></script>
+</head>
+<body>
+
+<textarea id="markdown-editor"><!--CONTENT--></textarea>
+
+<script>
+  // Initialize the SimpleMDE editor on your textarea
+  var simplemde = new SimpleMDE({ element: document.getElementById("markdown-editor") });
+
+  // Extract filename from URL
+  var pathArray = window.location.pathname.split('/');
+  var filename = pathArray[pathArray.length - 1];
+
+  // Save markdown content when Save button clicked
+  function saveMarkdown() {
+      var markdownContent = simplemde.value();
+
+      fetch('/save/' + filename, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'text/plain', // Set correct content-type for plain text
+          },
+          body: markdownContent // Send raw markdown content as plain text
+      })
+      .then(response => response.text())
+      .then(text => alert(text))
+      .catch(error => alert('Error saving file: ' + error));
+  }
+
+</script>
+
+<button onclick="saveMarkdown()">Save</button>
+
+</body>
+</html>
